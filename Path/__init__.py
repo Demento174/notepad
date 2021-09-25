@@ -14,6 +14,7 @@ class MyPathInterface:
         return str(MyPathVariable)
 
     @staticmethod
-    def extendPath(path):
-        pass
+    def extendPath(base,path):
+        MyPathVariable = MyPath(path, mainFolder=base)
+        return str(MyPathVariable)
 

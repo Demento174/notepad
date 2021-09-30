@@ -48,6 +48,12 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     #debug toolbar
     'debug_toolbar',
+    # django-mptt
+    'mptt',
+    # Photo gallery
+    'photologue',
+     'sortedm2m',
+    'django.contrib.sites',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #debug toolbar
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 ]
 
 ROOT_URLCONF = 'notepad.urls'
@@ -76,7 +83,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'base': 'templatetags.base',
+
+            }
         },
+
     },
 ]
 
@@ -168,3 +180,5 @@ CKEDITOR_CONFIGS = {
 }
 #debug toolbar
 INTERNAL_IPS = ['127.0.0.1',]
+
+SITE_ID = 1

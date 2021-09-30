@@ -1,7 +1,7 @@
-
 from django.contrib import admin
 from wordpress.models import *
 
+from mptt.admin import DraggableMPTTAdmin,MPTTModelAdmin
 # class NewsAdmin(admin.ModelAdmin):
 #     list_display = ('id', 'title', 'category', 'created_at', 'updated_at', 'is_published')
 #     list_display_links = ('id','title')
@@ -32,14 +32,15 @@ class EntitiesAdmin(admin.ModelAdmin):
 admin.site.register(Entities, EntitiesAdmin)
 
 
-class TermsAdmin(admin.ModelAdmin):
-    list_display = ('id','type','title','slug','created_at','updated_at')
-    list_display_links = ('id','title')
-    search_fields = ('title','slug')
-    list_filter = ('id', 'title', 'type')
+class TermsAdmin(DraggableMPTTAdmin):
+    # list_display = ('id','type','title','slug','created_at','updated_at')
+    # list_display_links = ('id','title')
+    # search_fields = ('title','slug')
+    # list_filter = ('id', 'title', 'type')
     # summernote_fields = 'description'
     prepopulated_fields = {"slug": ("title",)}
 
+# admin.site.register(Terms, TermsAdmin)
 admin.site.register(Terms, TermsAdmin)
 
 

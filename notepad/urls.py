@@ -16,18 +16,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+
 from django.conf import settings
 from django.conf.urls.static import static
 #debug toolbar
 import debug_toolbar
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #ckeditor
     path('ckeditor/', include('ckeditor_uploader.urls')),
     #debug toolbar
     path('__debug__/', include(debug_toolbar.urls)),
+    #photologue
+    path('photologue/', include('photologue.urls', namespace='photologue')),
+    #admin
+    path('admin/', admin.site.urls),
+    #apps
+    path('',include('wordpress.urls')),
+
     # path('summernote/', include('django_summernote.urls')),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

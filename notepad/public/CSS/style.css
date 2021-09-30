@@ -1,0 +1,11 @@
+.sidebar .tags .card-body{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sidebar .tags .card-body a{
+    display: flex;
+    margin: 5px;
+}
+
+

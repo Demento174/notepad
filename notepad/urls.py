@@ -25,11 +25,11 @@ urlpatterns = [
     #ckeditor
     path('ckeditor/', include('ckeditor_uploader.urls')),
     #debug toolbar
-    path('__debug__/', include(debug_toolbar.urls)),
+    # path('__debug__/', include(debug_toolbar.urls)),
     #photologue
     path('photologue/', include('photologue.urls', namespace='photologue')),
     #admin
-    path('admin/', admin.site.urls),
+    path('demento/', admin.site.urls),
     #apps
     path('',include('wordpress.urls')),
 

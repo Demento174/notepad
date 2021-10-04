@@ -1,0 +1,21 @@
+{% extends 'EditBase.html' %}
+{% block content %}
+     {% if type %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center">
+                    Тип записи: {{ type }}
+                </h2>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {{ block.super }}
+
+    <script>
+
+    </script>
+{% endblock %}

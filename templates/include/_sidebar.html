@@ -5,9 +5,10 @@
 <div class="sidebar">
     <div class="item mb-5">
     <h4>Типы записей</h4>
-    <div class="list-group">
+    <div class="list-group postTypes">
         {%  for item in postTypes %}
             <a href="{{ item.link }}" class="list-group-item list-group-item-action" aria-current="true">
+                <img src="{{ item.image.url }}" alt="{{ photo.title }}">
                 {{ item.title }}
             </a>
         {% endfor %}

@@ -2,16 +2,38 @@
 
 {% block content %}
 
-
-
-{% for item in object_list %}
+{% if title %}
+    <h2 class="text-info text-center fw-bold mb-5">{{ title }}</h2>
+{% endif %}
+<div class="object_list">
+    {% for item in object_list %}
     <div class="card mb-3">
-{#        <img src="" class="card-img-top" alt="...">#}
+    {% if item.image.url %}
+        <img class="image" src="{{ item.image.url }}" class="card-img-top" alt="{{ item.image.alt }}">
+    {% endif %}
         <div class="card-body">
-            <h5 class="card-title">item.title</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            <h5 class="card-title"><a href="{{ item.link }}">{{ item.title }}</a> | <a href="{{ item.link_edit }}">Редактировать</a></h5>
+            <div>
+                <p class="card-text">
+                {% autoescape off %}
+                    {{ item.content | truncatechars:250 }}
+                {% endautoescape %}
+            </p>
+            </div>
+
+            <p class="card-text">
+                <small class="text-muted">Created at: {{ item.created_at }}</small>
+                |
+                <small class="text-muted">Updated at: {{ item.updated_at }}</small>
+            </p>
+            <p class="card-text">
+                {% for tag in item.tags %}
+                    <div  type="button" class="btn btn-secondary">{{ tag }}</div>
+
+                {% endfor %}
+            </p>
         </div>
     </div>
 {% endfor %}
+</div>
 {% endblock %}

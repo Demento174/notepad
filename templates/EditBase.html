@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <form method="post" class="form_edit">
+    {{ form.non_field_errors }}
+        {% csrf_token %}
+        {% for item in form %}
+            {% if item.is_hidden != True %}
+                <div class="mb-3 form-group {% if item.name == 'image' %} image {% endif %}">
+
+            {% if item.name == 'image'  and item.value.url  %}
+
+                <img src="{{ item.value.url }}" alt="{{ item.value.alt }}">
+            {% endif %}
+                <label for="{{item.id_for_label }}" class="{% if item.name == 'postTypes' %} form-check-label {% else %} form-label  {% endif %}">{{ item.label }}</label>
+                {{ item }}
+                <div class="invalid-feedback">
+                    {{ item.errors }}
+                </div>
+            </div>
+            {% else %}
+                {{ item }}
+                <div class="invalid-feedback">
+                    {{ item.errors }}
+                </div>
+            {% endif %}
+
+        {% endfor %}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+
+{% endblock %}
+

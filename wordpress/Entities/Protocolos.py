@@ -7,6 +7,7 @@ class ProtocolEntity(ABC):
     _title = None
     _slug = None
     _link = None
+    _link_edit = None
 
     # -----------------------[ Setters ]-----------------------------------------------
     @abstractmethod
@@ -23,6 +24,10 @@ class ProtocolEntity(ABC):
 
     @abstractmethod
     def _set_link(self,model):
+        raise NotImplementedError(errors_handler(ERRORS['NotImplemented']))
+
+    @abstractmethod
+    def _set_link_edit(self, model):
         raise NotImplementedError(errors_handler(ERRORS['NotImplemented']))
 
     # -----------------------[ Getters ]-----------------------------------------------
@@ -42,6 +47,9 @@ class ProtocolEntity(ABC):
     def get_link(self):
         raise NotImplementedError(errors_handler(ERRORS['NotImplemented']))
 
+    @abstractmethod
+    def get_link_edit(self):
+        raise NotImplementedError(errors_handler(ERRORS['NotImplemented']))
 
 
 

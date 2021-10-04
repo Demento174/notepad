@@ -8,6 +8,7 @@ from wordpress.models import Terms
 class TaxonomiesAbstract(EntityAbstract):
     _posts = None
     _fields = None
+    _description = None
     def __init__(self, model: Terms):
 
         self.check_type(model.type)
@@ -25,6 +26,10 @@ class TaxonomiesAbstract(EntityAbstract):
             result.append(post.pk)
         self._posts = result
 
+    def set_description(self):
+        self._description = self._model.description
+
+
     # -----------------------[ Getters ]-----------------------------------------------
 
 
@@ -40,6 +45,9 @@ class TaxonomiesAbstract(EntityAbstract):
 
     def get_count_post(self):
         return len(self._posts)
+
+    def get_description(self):
+        return self._description
 
     def get_created_at(self):
         return self._created_at
@@ -108,13 +116,11 @@ class Category(TaxonomiesAbstract):
         return result
 
     def get_family(self):
-        result = []
         return self._model.get_descendants()
 
-        # for children in self._model.get_descendants(include_self=True):
-        #     if check_children(children) is not None:
-        # return result
-
+    @staticmethod
+    def get_link_add(model=Terms, **kwargs):
+        return EntityAbstract.get_link_add(model=Terms, type='category')
 
 
 class Tag(TaxonomiesAbstract):
@@ -123,6 +129,8 @@ class Tag(TaxonomiesAbstract):
     def __int__(self, model: Terms):
         super().__int__(model)
 
-
+    @staticmethod
+    def get_link_add(model=Terms, **kwargs):
+        return EntityAbstract.get_link_add(model=Terms, type='tag')
 
 

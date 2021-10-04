@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     #debug toolbar
-    'debug_toolbar',
+    # 'debug_toolbar',
     # django-mptt
     'mptt',
     # Photo gallery
@@ -65,7 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #debug toolbar
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 
 ]
 
@@ -74,7 +74,9 @@ ROOT_URLCONF = 'notepad.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [MyPathInterface.extendPath(str(BASE_DIR),['templates'])],
+        'DIRS': [
+            MyPathInterface.extendPath(str(BASE_DIR),['templates'])
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,16 +101,16 @@ WSGI_APPLICATION = 'notepad.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
-    'Postgreql':
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+    'default':
         {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'notepad',
             'USER': 'demento',
-            'PASSWORD': 'HardPassword1984',
+            'PASSWORD': 'HardPassword1984!',
             'HOST': '127.0.0.1',
             'PORT': '5432',
         }

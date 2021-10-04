@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card mb-3">
+        {% if object.image.url %}
+            <img src="{{ object.image.url }}" class="card-img-top" alt="{{ object.image.alt }}">
+        {% endif %}
+        <div class="card-body">
+            <p class="card-text"><h3>Категории:</h3> {% for category in object.categories %} <a href="{{ category.link }}">{{ category }}</a> {% if forloop.last == False %}>>{% endif %} {% endfor %}</p>
+            <p class="card-text">
+                <h3>Теги:</h3> {% for tag in object.tags %}<a href="{{ tag.link }}" class="btn btn-secondary">{{ tag }}</a> {% endfor %}
+            </p>
+            <h1 class="card-title">{{ object.title }}</h1>
+            <div class="card-text">{% autoescape off %} {{ object.content }} {% endautoescape %}</div>
+            <p class="card-text">
+                <small class="text-muted">Created at: {{ object.created_at }}</small>
+                <small class="text-muted">Updated at: {{ object.updated_at }}</small>
+            </p>
+        </div>
+    </div>
+{% endblock %}

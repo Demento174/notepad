@@ -5,6 +5,7 @@ class PostInterface(object):
     @staticmethod
     def __get_full_version(model):
         post = Post.convert(model)
+        post.set_image()
         post.set_taxonomies()
         return post
 
@@ -12,12 +13,13 @@ class PostInterface(object):
     def __get_short_version(model):
 
         post = Post.convert(model)
-
+        post.set_image()
         return post
 
     @staticmethod
     def __get_term_version(model):
         post = Post.convert(model)
+        post.set_image()
         post.set_taxonomies()
         return post
 
@@ -61,10 +63,10 @@ class PostInterface(object):
     def get_all():
         return [PostInterface.__get_full_version(model) for model in Post.query().all()]
 
-    # @staticmethod
-    # def get_all_short(values=['id', 'title', 'slug', 'type']):
-    #     return [PostInterface.__get_short_version(model) for model in Post.query().all(values)]
-    #
+    @staticmethod
+    def get_all_short(values=['id', 'title', 'slug', 'type', 'image']):
+        return [PostInterface.__get_short_version(model) for model in Post.query().all(values)]
+
     # @staticmethod
     # def get_all_terms(values=['id', 'title', 'slug', 'type', 'terms']):
     #     return [PostInterface.__get_term_version(model) for model in Post.query().all(values)]
@@ -75,7 +77,7 @@ class PostInterface(object):
 
     @staticmethod
     def get_all_by_type(postType: str):
-        return [PostInterface.__get_full_version(model) for model in Post.query().filter({'type':postType})]
+        return [PostInterface.__get_full_version(model) for model in Post.query().filter({'type__slug':postType})]
     #
     # @staticmethod
     # def get_all_short_by_type(postType: str, values=['id', 'title', 'slug', 'type']):
@@ -85,17 +87,30 @@ class PostInterface(object):
     # def get_all_terms_by_type(postType: str, values=['id', 'title', 'slug', 'type', 'terms']):
     #     return [PostInterface.__get_term_version(model) for model in Post.query().filter({'type':postType},values)]
 
+    @staticmethod
+    def get_all_by_category(categorySlug: str):
+        return [PostInterface.__get_full_version(model) for model in Post.query().filter({'term__slug': categorySlug})]
+
+
+    @staticmethod
+    def get_link_add(type):
+        return Post.get_link_add(kwargs = {'type':type})
+
 class PostTypeInterface(object):
 
     @staticmethod
     def __get_full_version(model):
         post = PostType.convert(model)
+        post.set_image()
         post.set_posts()
         return post
 
     @staticmethod
     def __get_short_version(model):
-        return PostType.convert(model)
+        post = PostType.convert(model)
+        post.set_image()
+
+        return post
 
 
     """
@@ -111,8 +126,8 @@ class PostTypeInterface(object):
         return PostTypeInterface.__get_short_version(PostType.query().by_id(id))
 
     """
-           Methods get by slug
-       """
+        Methods get by slug
+    """
 
     @staticmethod
     def get_by_slug(slug: str):
@@ -121,6 +136,12 @@ class PostTypeInterface(object):
     @staticmethod
     def get_by_slug_short(slug: str):
         return PostTypeInterface.__get_short_version(PostType.query().by_slug(slug))
+
+    @staticmethod
+    def get_title_by_slug(slug: str):
+        postType =  PostType.query().by_slug(slug=slug,values =['title'])
+        return postType['title']
+
 
     """
             Methods get all posts
@@ -133,6 +154,11 @@ class PostTypeInterface(object):
     def get_all_short():
         return [PostTypeInterface.__get_short_version(model) for model in PostType.query().all()]
 
+    @staticmethod
+    def get_link_add():
+
+        return PostType.get_link_add()
+
 class CategoryInterface(object):
 
     @staticmethod
@@ -140,6 +166,7 @@ class CategoryInterface(object):
         cat = Category.convert(model)
         if cat is None:
             return None
+        cat.set_description()
         cat.set_posts()
         cat.set_parent()
         cat.set_childrens()
@@ -179,8 +206,13 @@ class CategoryInterface(object):
     def get_by_slug_short(slug: str):
         return CategoryInterface.__get_short_version(Category.query().filter_first({'slug':slug,'type':'category'}))
 
+    @staticmethod
+    def get_title_by_slug(slug: str):
+        cat = Category.query().by_slug(slug=slug, values=['title'])
+        return cat['title']
+
     """
-            Methods get all posts
+            Methods get all categories
         """
     @staticmethod
     def get_all():
@@ -201,6 +233,18 @@ class CategoryInterface(object):
 
         return result
 
+    """
+                Methods get all posts by categories
+            """
+
+    @staticmethod
+    def get_posts_by_categories_slug(slug):
+        category = CategoryInterface.get_by_slug(slug)
+        return [PostInterface.get_by_id(post) for post in category.posts]
+
+    @staticmethod
+    def get_link_add():
+        return Category.get_link_add()
 
 class TagInterface(object):
 
@@ -209,6 +253,7 @@ class TagInterface(object):
         cat = Tag.convert(model)
         if cat is None:
             return None
+        cat.set_description()
         cat.set_posts()
         return cat
 
@@ -242,6 +287,11 @@ class TagInterface(object):
     def get_by_slug_short(slug: str):
         return TagInterface.__get_short_version(Tag.query().filter_first({'slug':slug,'type':'tag'}))
 
+    @staticmethod
+    def get_title_by_slug(slug: str):
+        tag = Tag.query().by_slug(slug=slug, values=['title'])
+        return tag['title']
+
     """
             Methods get all posts
         """
@@ -252,3 +302,16 @@ class TagInterface(object):
     @staticmethod
     def get_all_short():
         return [TagInterface.__get_short_version(model) for model in Tag.query().filter({'type':'tag'})]
+
+    """
+        Methods get all posts by categories
+    """
+
+    @staticmethod
+    def get_posts_by_tag_slug(slug):
+        category = TagInterface.get_by_slug(slug)
+        return [PostInterface.get_by_id(post) for post in category.posts]
+
+    @staticmethod
+    def get_link_add():
+        return Tag.get_link_add()

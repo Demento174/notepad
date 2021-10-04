@@ -6,6 +6,7 @@ from .Query import *
 from django.core.exceptions import ObjectDoesNotExist
 from .Errors import *
 from functions import convert_model_to_dict,convert_dict_to_model
+from django.urls import reverse
 
 def get_types():
     """
@@ -18,17 +19,11 @@ def get_types():
     """
     Добавление типов записей к типа сущностей
     """
+
     for i in Types.objects.all():
         types[i.slug] = i.title
 
     return types
-
-
-
-
-
-
-
 
 class EntityAbstract(ProtocolEntity):
 
@@ -36,6 +31,8 @@ class EntityAbstract(ProtocolEntity):
 
     _TYPE = None
     _model = None
+
+    _image = None
 
     _created_at = None
     _updated_at = None
@@ -48,6 +45,7 @@ class EntityAbstract(ProtocolEntity):
         self._title = self._set_title(self._model)
         self._slug = self._set_slug(self._model)
         self._link = self._set_link(self._model)
+        self._link_edit = self._set_link_edit(self._model)
 
 
 
@@ -83,11 +81,24 @@ class EntityAbstract(ProtocolEntity):
             return  model.slug
 
     def _set_link(self,model):
+
         if isinstance(model, dict):
             raise Exception("Try to get link object in short version ")
         elif isinstance(model, models.Model):
             return model.get_absolute_url()
 
+    def _set_link_edit(self,model):
+
+        if isinstance(model, dict):
+            raise Exception("Try to get link object in short version ")
+        elif isinstance(model, models.Model):
+            return model.get_absolute_url_edit()
+
+    def set_image(self):
+        if hasattr(self._model, 'image'):
+            self._image = self._model.image
+        else:
+            self._image = None
     # -----------------------[ Getters ]-----------------------------------------------
 
 
@@ -109,7 +120,21 @@ class EntityAbstract(ProtocolEntity):
     def get_type(self):
         return self._TYPE
 
+    def get_image(self):
+        return {
+            'url': self._image.get_display_url() if self._image is not None else '',
+            'alt': self._image.title if self._image is not None else '',
+            'id': self._image.id if self._image is not None else '',
+        }
 
+    def get_thumbnail(self):
+        return {
+            'url': self._model.image.get_thumbnail_url(),
+            'alt': self._model.image.title
+        }
+
+    def get_link_edit(self):
+        return self._link_edit
 
 
     # -----------------------[ other methods ]-----------------------------------------------
@@ -130,6 +155,9 @@ class EntityAbstract(ProtocolEntity):
 
         return queryObject(model)
 
+    @staticmethod
+    def get_link_add(model=Entities,**kwargs):
+        return model.get_absolute_url_create(**kwargs)
     # -----------------------[ Magic methods ]-----------------------------------------------
 
     def __getattr__(self, key):

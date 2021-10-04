@@ -35,6 +35,7 @@ class QueryEntity(AbstractQuery):
 
 
     def filter_first(self,kwargs,values=None):
+
         return self._modelClass.objects.values(*values).filter(**kwargs).first() if values else self._modelClass.objects.filter(**kwargs).first()
 
     def filter(self,kwargs,values=None):

@@ -1,30 +1,64 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-      <a class="navbar-brand" href="/">Navbar</a>
+      <a class="navbar-brand" href="/">Главная</a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
-
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <!---------------------------------[ EDIT ]--------------------------------->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Редактировать типы записей</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for item in postTypes %}
+                        <li><a class="dropdown-item" href="{{ item.link_edit }}">{{ item.title }}</a></li>
+                    {% endfor %}
+                </ul>
             </li>
 
-            {% comment %}
             <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown link
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-            {% endcomment %}
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Редактировать Категории</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for item in categories %}
+                        <li><a class="dropdown-item" href="{{ item.link_edit }}">{{ item.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Редактировать Teги</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for item in tags %}
+                        <li><a class="dropdown-item" href="{{ item.link_edit }}">{{ item.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+
+            <!---------------------------------[ CREATE ]--------------------------------->
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="{{ modelPostType.get_link_add }}"   >Создать тип записи</a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="{{ modelCategory.get_link_add }}"   >Добавить Категорию</a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="{{ modelTag.get_link_add }}"   >Добавить Teг</a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="{{ modelTag.get_link_add }}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Добавить Запись</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for item in postTypes %}
+                        <li><a class="dropdown-item" href="{{ item.get_link_add_post  }}">{{ item.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
         </ul>
       </div>
 

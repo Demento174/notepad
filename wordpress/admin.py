@@ -1,5 +1,6 @@
 from django.contrib import admin
 from wordpress.models import *
+from photologue.admin import GalleryAdmin
 
 from mptt.admin import DraggableMPTTAdmin,MPTTModelAdmin
 # class NewsAdmin(admin.ModelAdmin):

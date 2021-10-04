@@ -8,4 +8,29 @@
     margin: 5px;
 }
 
+.sidebar .postTypes img{
+max-width: 50px;
+    margin-right: 10px;
+}
 
+.object_list .card .image{
+    max-width: 50%;
+    margin: 0 auto;
+}
+
+.form_edit .image img{
+    display: block;
+    margin: 5px;
+}
+
+.form_edit{
+    margin-bottom: 20px;
+}
+
+.invalid-feedback{
+    display: block;
+}
+
+button.remove{
+
+}

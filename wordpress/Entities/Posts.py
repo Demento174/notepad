@@ -29,10 +29,6 @@ class Post(ProtocolPost,EntityAbstract):
         self._updated_at = self._set_updated_at(self._model)
 
     # -----------------------[ setters ]-----------------------------------------------
-
-
-
-
     def _set_fields(self):
         return []
 
@@ -54,22 +50,21 @@ class Post(ProtocolPost,EntityAbstract):
 
     def __set_categories(self,model):
 
-        result = []
+        self._categories = []
 
         for term in model.terms.all():
             if term.type == Terms.TaxonomiesTypes[0][0]:
-                result.append(Category(term))
+                self._categories.append(Category(term))
 
-        return result
+        return self._categories
 
     def __set_tags(self,model):
         from .Taxonomies import Tag
-        result = []
+        self._tags = []
         for term in model.terms.all():
             if term.type == Terms.TaxonomiesTypes[1][0]:
-                result.append(Tag(term))
+                self._tags.append(Tag(term))
 
-        return result
 
 
     def _set_created_at(self,model):
@@ -101,6 +96,7 @@ class Post(ProtocolPost,EntityAbstract):
         return self._categories
 
     def get_tags(self):
+
         return self._tags
 
     def get_created_at(self):
@@ -109,8 +105,9 @@ class Post(ProtocolPost,EntityAbstract):
     def get_updated_at(self):
         return self._updated_at
 
-
-
+    @staticmethod
+    def get_link_add(model=Entities,**kwargs):
+        return EntityAbstract.get_link_add(model=Entities,**kwargs)
 
 
 
@@ -122,6 +119,7 @@ class PostType(EntityAbstract):
     _title = None
     _slug = None
     _link = None
+    _content = None
     _posts = None
     _count = None
 
@@ -134,14 +132,25 @@ class PostType(EntityAbstract):
         self._title = self._set_title(self._model)
         self._slug = self._set_slug(self._model)
         self._link = self._set_link(self._model)
+        self._link_edit = self._set_link_edit(self._model)
 
     # -----------------------[ Setters ]-----------------------------------------------
     def _set_model(self,model):
         return convert_dict_to_model(model,Types)
 
+    def _set_link(self,model):
+
+        if isinstance(model, dict):
+            raise Exception("Try to get link object in short version ")
+        elif isinstance(model,Types):
+
+            return model.get_absolute_url()
+
     def set_posts(self):
         self._posts =  [Post(post) for post in self._model.entities_type.all()]
 
+    def content(self):
+        self._content = self._model.content
 
     # -----------------------[ Getters ]-----------------------------------------------
 
@@ -157,6 +166,9 @@ class PostType(EntityAbstract):
     def get_link(self):
         return self._link
 
+    def get_content(self):
+        return self._content
+
     def get_posts(self):
         return self._posts
 
@@ -166,12 +178,24 @@ class PostType(EntityAbstract):
         else:
             return len(self._posts)
 
+    def get_link_add_post(self):
+        return EntityAbstract.get_link_add(model=Entities, type= self.slug)
+
+    @staticmethod
+    def get_link_add(model=Types,**kwargs):
+        return EntityAbstract.get_link_add(model=Types,**kwargs)
+
+
+
+
     # -----------------------[ Static methods ]-----------------------------------------------
 
     @staticmethod
     def query(model=Types):
         queryObject = type('queryClass', (QueryEntity, QueryRelationships), dict(_modelClass=None))
         return queryObject(model)
+
+
 
 
     def __str__(self):

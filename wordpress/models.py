@@ -1,24 +1,40 @@
 from django.db import models
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.urls import reverse
+from photologue.models import Photo
+
 # Create your models here.
 
 
 class Types(models.Model):
     title = models.CharField(verbose_name='Заголовок', max_length=150)
     slug = models.SlugField(verbose_name='Slug', max_length=150)
-    # thumbnail=''
+    image = models.ForeignKey(Photo, related_name='type',verbose_name='Изображение',null=True,blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.slug
 
     def get_absolute_url(self):
+
         parameters = {
             'postType':self.slug
         }
 
-        return reverse('wp_post_type',kwargs=parameters)
+        return reverse('wp_posts_type',kwargs=parameters)
+
+    def get_absolute_url_edit(self):
+
+        parameters = {
+            'postType':self.slug
+        }
+
+        return reverse('wp_posts_type_edit',kwargs=parameters)
+
+    def get_absolute_url_create():
+
+        return reverse('wp_posts_type_create')
 
     class Meta:
         verbose_name = 'Тип записи'
@@ -29,8 +45,10 @@ class Entities(models.Model):
     type = models.ForeignKey(Types,related_name='entities_type', verbose_name='Тип записи', on_delete=models.CASCADE)
     title = models.CharField(verbose_name='Заголовок', max_length=150)
     slug = models.SlugField(verbose_name='Slug', max_length=150)
-    content = RichTextField(config_name='default', verbose_name='Контент', blank=True, null=True)
+    content = RichTextUploadingField(config_name='default', verbose_name='Контент', blank=True, null=True)
     terms = models.ManyToManyField('Terms',related_name='entities_terms',verbose_name='Категории,теги')
+    image = models.ForeignKey(Photo, related_name='entities', verbose_name='Изображение', null=True, blank=True,
+                              on_delete=models.SET_NULL)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Дата последнего изменения', auto_now=True)
 
@@ -39,20 +57,31 @@ class Entities(models.Model):
 
     def get_absolute_url(self):
         parameters = {
-            'type':self.type.slug
+            'type':self.type.slug,
+            'slug':self.slug
         }
-        if self.slug is not None:
-            parameters['identifier']=self.slug
-        else:
-            parameters['identifier']=self.pk
 
         return reverse('wp_entity',kwargs=parameters)
+
+    def get_absolute_url_edit(self):
+        parameters = {
+            'type':self.type.slug,
+            'slug':self.slug
+        }
+
+        return reverse('wp_entity_edit',kwargs=parameters)
+
+    @staticmethod
+    def get_absolute_url_create(type):
+        parameters = {
+            'type':type,
+        }
+        return reverse('wp_entity_create',kwargs=parameters)
 
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
         ordering = ['title']
-
 
 class Terms(MPTTModel):
     TaxonomiesTypes = [
@@ -67,19 +96,31 @@ class Terms(MPTTModel):
     postTypes = models.ManyToManyField(Types,related_name='terms_types', blank=True)
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, related_name='children', blank=True, null=True)
     fields = models.ManyToManyField('Fields', related_name='terms_fields', blank=True)
+    image = models.ForeignKey(Photo, related_name='terms', verbose_name='Изображение', null=True, blank=True,
+                              on_delete=models.SET_NULL)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Дата последнего изменения', auto_now=True)
 
     def get_absolute_url(self):
         parameters = {
-            'type':self.type
+            'type':self.type,
+            'slug': self.slug
         }
-        if self.slug is not None:
-            parameters['identifier']=self.slug
-        else:
-            parameters['identifier']=self.pk
-
         return reverse('wp_term',kwargs=parameters)
+
+    def get_absolute_url_edit(self):
+        parameters = {
+            'type': self.type,
+            'slug': self.slug
+        }
+        return reverse('wp_term_edit', kwargs=parameters)
+
+    @staticmethod
+    def get_absolute_url_create(type):
+        parameters = {
+            'type': type,
+        }
+        return reverse('wp_term_create', kwargs=parameters)
 
     def __str__(self):
         return f'{self.type} : {self.title}'
